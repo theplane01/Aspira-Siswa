@@ -611,21 +611,21 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label" style="color: var(--text-soft);">Status</label>
-                            <select name="status" class="form-select" style="background: rgba(10,16,32,0.7); border: 1px solid rgba(99,130,255,0.16); color: var(--text);">
+                            <label class="form-label" style="color: #000000; font-weight: 500; margin-bottom: 0.5rem;">Status</label>
+                            <select name="status" class="form-select" style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.16); color: var(--text);">
                                 @foreach(['Menunggu','Proses','Selesai'] as $s)
                                     <option value="{{ $s }}" {{ $aspi->status == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" style="color: var(--text-soft);">Feedback</label>
-                            <textarea name="feedback" class="form-control" style="background: rgba(10,16,32,0.7); border: 1px solid rgba(99,130,255,0.16); color: var(--text);" rows="3" required>{{ $aspi->feedback }}</textarea>
+                           <label class="form-label" style="color: #000000; font-weight: 500; margin-bottom: 0.5rem;">Feedback</label>
+                            <textarea name="feedback" class="form-control" style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.16); color: var(--text);" rows="3" required>{{ $aspi->feedback }}</textarea>
                         </div>
                     </div>
                     <div class="modal-footer" style="border-top: 1px solid var(--gb);">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(255,255,255,0.1); color: var(--text-soft); border: 1px solid rgba(255,255,255,0.1);">Batal</button>
-                        <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--indigo), #7c3aed); color: #fff; border: none;">Kirim</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgb(255, 255, 255); color: var(--text-soft); border: 1px solid rgb(0, 0, 0);">Batal</button>
+                        <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--indigo), #ffffff); color: #000000; border: none;">Kirim</button>
                     </div>
                 </form>
             </div>

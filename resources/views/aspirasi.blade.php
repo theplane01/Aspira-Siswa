@@ -811,23 +811,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const aspirasiForm = document.getElementById('aspirasi-form');
-            if (aspirasiForm) {
-                aspirasiForm.addEventListener('submit', () => {
-                    Swal.fire({
-                        title: 'Sabar ya, Wak...', text: 'Lagi kita kirim laporan kau',
-                        allowOutsideClick: false,
-                        toast: true,
-                        position: 'top',
-                        showConfirmButton: false,
-                        background: 'rgba(10,16,32,0.97)',
-                        color: '#e8edf8',
-                        didOpen: () => { Swal.showLoading(); }
-                    });
-                });
-            }
-
+      
             refreshAspirasiStats();
             setInterval(refreshAspirasiStats, 10000);
 
