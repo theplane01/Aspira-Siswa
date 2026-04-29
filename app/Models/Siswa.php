@@ -12,4 +12,9 @@ class Siswa extends Model
     protected $keyType = 'string'; // Karena NIS kita anggap string/varchar
 
     protected $fillable = ['nis', 'nama', 'password', 'kelas', 'status']; // Tambahkan 'status' di sini!
+
+    public function aspirasis()
+    {
+        return $this->hasMany(Aspirasi::class, 'nis', 'nis');
+    }
 }

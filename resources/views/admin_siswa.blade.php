@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Siswa — Aspira Siswa</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Student Management — Aspira Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -266,6 +267,53 @@
             cursor: pointer; transition: all 0.2s;
         }
         .btn-edit:hover { background: rgba(37,99,235,0.2); }
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+        .btn-approve-mini,
+        .btn-reject-mini {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.5rem 0.8rem; border-radius: 6px;
+            font-size: 0.8rem; font-weight: 600; border: 1px solid transparent;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-approve-mini {
+            color: #059669;
+            background: rgba(16,185,129,0.12);
+            border-color: rgba(16,185,129,0.25);
+        }
+        .btn-approve-mini:hover { background: rgba(16,185,129,0.2); }
+        .btn-reject-mini {
+            color: var(--danger);
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.25);
+        }
+        .btn-reject-mini:hover { background: rgba(239,68,68,0.2); }
+
+        /* ── REPORT COUNT BADGE ── */
+        .count-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.45rem 0.9rem; border-radius: 20px;
+            font-size: 0.82rem; font-weight: 700;
+        }
+        .count-badge.none {
+            background: var(--surface); color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+        .count-badge.low {
+            background: rgba(16,185,129,0.12); color: #059669;
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .count-badge.mid {
+            background: rgba(245,158,11,0.12); color: #d97706;
+            border: 1px solid rgba(245,158,11,0.25);
+        }
+        .count-badge.high {
+            background: rgba(239,68,68,0.12); color: #dc2626;
+            border: 1px solid rgba(239,68,68,0.25);
+        }
 
         /* ── MODAL ── */
         .modal-content {
@@ -324,83 +372,14 @@
     </button>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon"><i class="bi bi-star-fill text-white" style="font-size: 0.78rem;"></i></div>
-            Aspira Siswa
-        </div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a href="/" class="sidebar-link {{ request()->path() == '/' ? 'active' : '' }}">
-                    <i class="bi bi-house-door"></i>
-                    <span>Beranda</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/aspirasi-publik" class="sidebar-link {{ request()->path() == 'aspirasi-publik' ? 'active' : '' }}">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Aspirasi Kita</span>
-                </a>
-            </li>
-            @if(session('admin_id'))
-            <li class="sidebar-item">
-                <a href="/admin" class="sidebar-link {{ request()->path() == 'admin' ? 'active' : '' }}">
-                    <i class="bi bi-speedometer2"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/admin/kategori" class="sidebar-link {{ request()->path() == 'admin/kategori' ? 'active' : '' }}">
-                    <i class="bi bi-tag"></i>
-                    <span>Manajemen Kategori</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/admin/siswa" class="sidebar-link {{ request()->path() == 'admin/siswa' ? 'active' : '' }}">
-                    <i class="bi bi-people"></i>
-                    <span>Manajemen Siswa</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/admin/approvals" class="sidebar-link {{ request()->path() == 'admin/approvals' ? 'active' : '' }}">
-                    <i class="bi bi-person-check-fill"></i>
-                    <span>Approval Registrasi</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/admin/profile" class="sidebar-link {{ request()->path() == 'admin/profile' ? 'active' : '' }}">
-                    <i class="bi bi-person-circle"></i>
-                    <span>Profil Admin</span>
-                </a>
-            </li>
-            @endif
-        </ul>
-
-        <div class="sidebar-user">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <div class="user-details">
-                    <div class="user-name">{{ session('admin_nama') }}</div>
-                    <div class="user-role">Admin</div>
-                </div>
-            </div>
-            <div class="sidebar-actions">
-                <a href="/logout" class="sidebar-btn logout" title="Logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-    </aside>
+    @include('partials.sidebar')
 
     <div class="page-wrap">
         <div class="container">
             <div class="page-hero">
                 <div class="hero-label"><i class="bi bi-people me-1"></i> Pengaturan</div>
-                <h1>Manajemen Siswa</h1>
-                <p>Kelola data siswa yang terdaftar di sistem Aspira Siswa.</p>
+                <h1>Student Management</h1>
+                <p>Kelola data siswa dan approval registrasi dalam satu halaman terpadu.</p>
             </div>
 
             <!-- Stats -->
@@ -457,20 +436,35 @@
                                 </td>
                                 <td>
                                     @php
-                                        $laporan_count = \App\Models\Aspirasi::where('nis', $siswa->nis)->count();
+                                        $laporan_count = $siswa->aspirasis_count ?? 0;
+                                        $badgeClass = $laporan_count === 0 ? 'none' : ($laporan_count <= 5 ? 'low' : ($laporan_count <= 20 ? 'mid' : 'high'));
+                                        $badgeIcon  = $laporan_count === 0 ? 'bi-dash-circle' : ($laporan_count <= 5 ? 'bi-file-earmark-text' : ($laporan_count <= 20 ? 'bi-files' : 'bi-stack'));
                                     @endphp
-                                    <span class="badge bg-info">{{ $laporan_count }}</span>
+                                    <span class="count-badge {{ $badgeClass }}">
+                                        <i class="bi {{ $badgeIcon }}"></i>
+                                        {{ $laporan_count }} laporan
+                                    </span>
                                 </td>
                                 <td>
-                                    <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa{{ $siswa->nis }}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    <form action="/admin/siswa/{{ $siswa->nis }}" method="POST" class="d-inline form-hapus">
-                                        @csrf @method('DELETE')
-                                        <button type="button" class="btn-danger-pill btn-hapus">
-                                            <i class="bi bi-trash"></i> Hapus
+                                    <div class="action-group">
+                                        @if($siswa->status === 'pending')
+                                            <button type="button" class="btn-approve-mini btn-status-action" data-url="/admin/approve/{{ $siswa->nis }}" data-action="setujui" data-name="{{ $siswa->nama }}">
+                                                <i class="bi bi-check-circle"></i> Setujui
+                                            </button>
+                                            <button type="button" class="btn-reject-mini btn-status-action" data-url="/admin/reject/{{ $siswa->nis }}" data-action="tolak" data-name="{{ $siswa->nama }}">
+                                                <i class="bi bi-x-circle"></i> Tolak
+                                            </button>
+                                        @endif
+                                        <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditSiswa{{ $siswa->nis }}">
+                                            <i class="bi bi-pencil"></i> Edit
                                         </button>
-                                    </form>
+                                        <form action="/admin/siswa/{{ $siswa->nis }}" method="POST" class="d-inline form-hapus">
+                                            @csrf @method('DELETE')
+                                            <button type="button" class="btn-danger-pill btn-hapus">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
@@ -560,6 +554,48 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) form.submit();
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-status-action').forEach((btn) => {
+            btn.addEventListener('click', function () {
+                const url = this.dataset.url;
+                const actionLabel = this.dataset.action;
+                const siswaName = this.dataset.name;
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+                Swal.fire({
+                    title: `Yakin mau ${actionLabel} akun ini?`,
+                    text: `Akun ${siswaName} akan diproses sekarang.`,
+                    icon: actionLabel === 'setujui' ? 'question' : 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: actionLabel === 'setujui' ? '#10b981' : '#ef4444',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: `Ya, ${actionLabel}`,
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
+                        .then((res) => res.json())
+                        .then((data) => {
+                            if (data.success) {
+                                Swal.fire('Berhasil!', data.message, 'success').then(() => location.reload());
+                                return;
+                            }
+
+                            Swal.fire('Gagal!', data.error || 'Terjadi kesalahan saat memproses data.', 'error');
+                        })
+                        .catch(() => {
+                            Swal.fire('Error!', 'Terjadi kesalahan jaringan.', 'error');
+                        });
                 });
             });
         });

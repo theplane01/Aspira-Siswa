@@ -178,47 +178,7 @@
         <i class="bi bi-list" style="font-size: 1.2rem;"></i>
     </button>
 
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon"><i class="bi bi-star-fill text-white" style="font-size: 0.78rem;"></i></div>
-            Aspira Siswa
-        </div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-item">
-                <a href="/" class="sidebar-link {{ request()->path() == '/' ? 'active' : '' }}">
-                    <i class="bi bi-house-door"></i><span>Beranda</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/aspirasi-publik" class="sidebar-link {{ request()->path() == 'aspirasi-publik' ? 'active' : '' }}">
-                    <i class="bi bi-chat-dots"></i><span>Aspirasi Kita</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
-                    <i class="bi bi-collection"></i><span>Laporan Saya</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/notifications" class="sidebar-link {{ request()->path() == 'notifications' ? 'active' : '' }}">
-                    <i class="bi bi-bell"></i><span>Pemberitahuan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/audit-log" class="sidebar-link {{ request()->path() == 'audit-log' ? 'active' : '' }}">
-                    <i class="bi bi-clock-history"></i><span>Riwayat Aktivitas</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
-                    <i class="bi bi-person-circle"></i><span>Profil Saya</span>
-                </a>
-            </li>
-        </ul>
-        <div class="sidebar-user">
-            <a href="/logout" class="sidebar-btn"><i class="bi bi-box-arrow-right"></i><span>Keluar</span></a>
-        </div>
-    </aside>
+    @include('partials.sidebar')
 
     <div class="page-wrap">
         <div class="container">

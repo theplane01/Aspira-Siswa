@@ -9,7 +9,11 @@ class SiswaController extends Controller
 {
     public function index()
     {
-        $siswas = Siswa::all();
+        if (!session('admin_id')) {
+            return redirect('/login')->with('error', 'Anda harus login sebagai admin.');
+        }
+
+        $siswas = Siswa::withCount('aspirasis')->orderBy('created_at', 'desc')->get();
         return view('admin_siswa', compact('siswas'));
     }
 
@@ -21,6 +25,10 @@ class SiswaController extends Controller
 
     public function update(Request $request, $nis)
     {
+        if (!session('admin_id')) {
+            return redirect('/login');
+        }
+
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|string|max:50',
@@ -34,8 +42,50 @@ class SiswaController extends Controller
 
     public function destroy($nis)
     {
+        if (!session('admin_id')) {
+            return redirect('/login');
+        }
+
         $siswa = Siswa::findOrFail($nis);
         $siswa->delete();
         return redirect('/admin/siswa')->with('success', 'Siswa berhasil dihapus');
+    }
+
+    public function approve($nis)
+    {
+        if (!session('admin_id')) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $siswa = Siswa::where('nis', $nis)->first();
+        if (!$siswa) {
+            return response()->json(['error' => 'Siswa tidak ditemukan'], 404);
+        }
+
+        $siswa->update(['status' => 'approved']);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Akun {$siswa->nama} berhasil disetujui."
+        ]);
+    }
+
+    public function reject($nis)
+    {
+        if (!session('admin_id')) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $siswa = Siswa::where('nis', $nis)->first();
+        if (!$siswa) {
+            return response()->json(['error' => 'Siswa tidak ditemukan'], 404);
+        }
+
+        $siswa->update(['status' => 'rejected']);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Akun {$siswa->nama} berhasil ditolak."
+        ]);
     }
 }

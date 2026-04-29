@@ -22,11 +22,6 @@ Route::get('/aspirasi/{id_pelaporan}', [AspirasiDetailController::class, 'show']
 Route::get('/aspirasi/stats', [AspirasiController::class, 'stats']);
 Route::post('/lapor', [AspirasiController::class, 'store']);
 
-// Route Comments & Likes
-Route::post('/aspirasi/{id_pelaporan}/comments', [AspirasiDetailController::class, 'addComment']);
-Route::post('/aspirasi/{id_pelaporan}/like', [AspirasiDetailController::class, 'toggleLike']);
-Route::delete('/comments/{id_komentar}', [AspirasiDetailController::class, 'deleteComment']);
-
 // Route Admin 
 Route::get('/admin', [AdminController::class, 'index']);
 Route::get('/admin/stats', [AdminController::class, 'stats']);
@@ -37,10 +32,12 @@ Route::post('/admin/bulk-status', [AdminController::class, 'bulkStatus']);
 Route::get('/admin/export/csv', [AdminController::class, 'exportCsv']);
 Route::get('/admin/export/pdf', [AdminController::class, 'exportPdf']);
 
-// Route Admin - Approval Registrasi
-Route::get('/admin/approvals', [AdminController::class, 'approveRegistrations']);
-Route::post('/admin/approve/{nis}', [AdminController::class, 'approveSiswa']);
-Route::post('/admin/reject/{nis}', [AdminController::class, 'rejectSiswa']);
+// Route lama approval registrasi diarahkan ke manajemen siswa terpadu
+Route::get('/admin/approvals', function () {
+    return redirect('/admin/siswa');
+});
+Route::post('/admin/approve/{nis}', [SiswaController::class, 'approve']);
+Route::post('/admin/reject/{nis}', [SiswaController::class, 'reject']);
 
 // Route Notifikasi
 Route::get('/notifications', [NotificationController::class, 'index']);

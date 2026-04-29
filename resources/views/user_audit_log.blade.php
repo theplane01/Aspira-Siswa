@@ -236,75 +236,7 @@
     </button>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon"><i class="bi bi-star-fill text-white" style="font-size: 0.78rem;"></i></div>
-            Aspira Siswa
-        </div>
-        <ul class="sidebar-menu">
-            <!-- COMMON ITEMS (EVERYONE) -->
-            <li class="sidebar-item">
-                <a href="/" class="sidebar-link {{ request()->path() == '/' ? 'active' : '' }}">
-                    <i class="bi bi-house-door"></i>
-                    <span>Beranda</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/aspirasi-publik" class="sidebar-link {{ request()->path() == 'aspirasi-publik' ? 'active' : '' }}">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Aspirasi Kita</span>
-                </a>
-            </li>
-
-            <!-- USER-ONLY ITEMS -->
-            @if(session('siswa_nis'))
-            <li class="sidebar-item">
-                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
-                    <i class="bi bi-collection"></i>
-                    <span>Laporan Saya</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/notifications" class="sidebar-link {{ request()->path() == 'notifications' ? 'active' : '' }}">
-                    <i class="bi bi-bell"></i>
-                    <span>Pemberitahuan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/audit-log" class="sidebar-link {{ request()->path() == 'audit-log' ? 'active' : '' }}">
-                    <i class="bi bi-clock-history"></i>
-                    <span>Riwayat Aktivitas</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
-                    <i class="bi bi-person-circle"></i>
-                    <span>Profil Saya</span>
-                </a>
-            </li>
-            @endif
-        </ul>
-
-        @if(session('siswa_nis'))
-        <div class="sidebar-user">
-            <div class="user-info">
-                <div class="user-avatar">
-                    {{ strtoupper(substr(session('siswa_nama'), 0, 1)) }}
-                </div>
-                <div class="user-details">
-                    <div class="user-name">{{ session('siswa_nama') }}</div>
-                    <div class="user-role">Siswa</div>
-                </div>
-            </div>
-            <div class="sidebar-actions">
-                <a href="/logout" class="sidebar-btn logout" title="Logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </div>
-        @endif
-    </aside>
+    @include('partials.sidebar')
 
     <div class="page-wrap">
         <div class="container">

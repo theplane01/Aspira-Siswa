@@ -26,23 +26,8 @@ class Aspirasi extends Model
         return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori');
     }
 
-    public function comments()
-    {
-        return $this->hasMany(Comment::class, 'id_pelaporan', 'id_pelaporan');
-    }
-
-    public function likes()
-    {
-        return $this->hasMany(Like::class, 'id_pelaporan', 'id_pelaporan');
-    }
-
     public function siswa()
     {
         return $this->belongsTo(Siswa::class, 'nis', 'nis');
-    }
-
-    public function isLikedBy($nis)
-    {
-        return $this->likes()->where('nis', $nis)->exists();
     }
 }
