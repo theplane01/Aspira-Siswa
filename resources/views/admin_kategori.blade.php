@@ -217,6 +217,34 @@
             cursor: pointer; transition: all 0.2s;
         }
         .btn-edit:hover { background: rgba(37,99,235,0.2); }
+        .btn-locked {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.5rem 1rem; background: var(--surface);
+            border: 1px solid var(--border); color: var(--text-dim);
+            border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+            cursor: not-allowed;
+        }
+        .count-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.45rem 0.9rem; border-radius: 20px;
+            font-size: 0.82rem; font-weight: 700;
+        }
+        .count-badge.none {
+            background: var(--surface); color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+        .count-badge.low {
+            background: rgba(16,185,129,0.12); color: #059669;
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .count-badge.mid {
+            background: rgba(245,158,11,0.12); color: #d97706;
+            border: 1px solid rgba(245,158,11,0.25);
+        }
+        .count-badge.high {
+            background: rgba(239,68,68,0.12); color: #dc2626;
+            border: 1px solid rgba(239,68,68,0.25);
+        }
 
         /* ── MODAL ── */
         .modal-content {
@@ -383,19 +411,36 @@
                                 <td>
                                     @php
                                         $count = \App\Models\Aspirasi::where('id_kategori', $kat->id_kategori)->count();
+                                        $badgeClass = $count === 0 ? 'none' : ($count <= 5 ? 'low' : ($count <= 20 ? 'mid' : 'high'));
+                                        $badgeIcon  = $count === 0 ? 'bi-dash-circle' : ($count <= 5 ? 'bi-file-earmark-text' : ($count <= 20 ? 'bi-files' : 'bi-stack'));
+                                        $isUsed     = $count > 0;
                                     @endphp
-                                    <span class="badge bg-info">{{ $count }} laporan</span>
+                                    <span class="count-badge {{ $badgeClass }}">
+                                        <i class="bi {{ $badgeIcon }}"></i>
+                                        {{ $count }} laporan
+                                    </span>
                                 </td>
                                 <td>
-                                    <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditKategori{{ $kat->id_kategori }}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    <form action="/admin/kategori/{{ $kat->id_kategori }}" method="POST" class="d-inline form-hapus">
-                                        @csrf @method('DELETE')
-                                        <button type="button" class="btn-danger-pill btn-hapus">
-                                            <i class="bi bi-trash"></i> Hapus
+                                    @if($isUsed)
+                                        {{-- Category is in use: lock edit & delete --}}
+                                        <span class="btn-locked" title="Kategori sedang digunakan, tidak dapat diedit">
+                                            <i class="bi bi-lock-fill"></i> Edit
+                                        </span>
+                                        <span class="btn-locked ms-1" title="Kategori sedang digunakan, tidak dapat dihapus">
+                                            <i class="bi bi-lock-fill"></i> Hapus
+                                        </span>
+                                    @else
+                                        {{-- Category not used: allow edit & delete --}}
+                                        <button class="btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditKategori{{ $kat->id_kategori }}">
+                                            <i class="bi bi-pencil"></i> Edit
                                         </button>
-                                    </form>
+                                        <form action="/admin/kategori/{{ $kat->id_kategori }}" method="POST" class="d-inline form-hapus">
+                                            @csrf @method('DELETE')
+                                            <button type="button" class="btn-danger-pill btn-hapus ms-1">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
@@ -441,6 +486,8 @@
 
     <!-- Modal Edit Kategori -->
     @foreach($kategoris as $kat)
+    @php $modalCount = \App\Models\Aspirasi::where('id_kategori', $kat->id_kategori)->count(); @endphp
+    @if($modalCount === 0)
     <div class="modal fade" id="modalEditKategori{{ $kat->id_kategori }}" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -464,6 +511,7 @@
             </div>
         </div>
     </div>
+    @endif
     @endforeach
 
     <footer>
