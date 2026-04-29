@@ -62,6 +62,10 @@ Route::delete('/admin/siswa/{nis}', [SiswaController::class, 'destroy']);
 // Profile Routes
 Route::get('/profile', [ProfileController::class, 'siswaProfile']); // User profile (existing route, now handled by controller)
 Route::put('/profile', [ProfileController::class, 'updateSiswaProfile']);
+Route::get('/laporan-saya', [ProfileController::class, 'laporanSaya']);
+Route::get('/laporan-saya/{id_pelaporan}/edit', [ProfileController::class, 'editLaporanSaya']);
+Route::put('/laporan-saya/{id_pelaporan}', [ProfileController::class, 'updateLaporanSaya']);
+Route::delete('/laporan-saya/{id_pelaporan}', [ProfileController::class, 'deleteLaporanSaya']);
 Route::get('/admin/profile', [ProfileController::class, 'adminProfile']);
 Route::put('/admin/profile', [ProfileController::class, 'updateAdminProfile']);
 
@@ -82,6 +86,3 @@ Route::post('/login-siswa', [AuthController::class, 'loginSiswa']);
 // Halaman Registrasi Siswa
 Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'registerSiswa']);
-
-// Halaman profile
-Route::get('/profile', [AspirasiController::class, 'profile']);

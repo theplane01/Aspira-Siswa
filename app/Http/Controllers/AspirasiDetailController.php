@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aspirasi;
 use App\Models\Comment;
 use App\Models\Like;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 
 class AspirasiDetailController extends Controller
@@ -36,16 +37,32 @@ class AspirasiDetailController extends Controller
 
         $aspirasi = Aspirasi::findOrFail($id_pelaporan);
 
-        Comment::create([
-            'id_komentar' => uniqid(),
+        $comment = Comment::create([
             'id_pelaporan' => $id_pelaporan,
             'nis' => session('siswa_nis'),
             'komentar' => $request->komentar,
         ]);
 
+        // Kirim notifikasi ke pemilik laporan saat ada komentar baru
+        if ((string) $aspirasi->nis !== (string) session('siswa_nis')) {
+            Notification::create([
+                'user_id' => $aspirasi->nis,
+                'type' => 'new_comment',
+                'title' => 'Komentar Baru pada Laporan Anda',
+                'message' => 'Laporan Anda mendapatkan komentar baru dari ' . (session('siswa_nama') ?? 'siswa lain') . '.',
+                'data' => [
+                    'aspirasi_id' => $aspirasi->id_pelaporan,
+                    'comment_id' => $comment->id_komentar,
+                    'comment_by_nis' => session('siswa_nis'),
+                    'comment_preview' => mb_substr($request->komentar, 0, 100),
+                ],
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Komentar berhasil ditambahkan.',
+            'commentsCount' => $aspirasi->comments()->count(),
         ]);
     }
 
@@ -66,12 +83,26 @@ class AspirasiDetailController extends Controller
             $existingLike->delete();
             $action = 'unliked';
         } else {
-            Like::create([
-                'id_like' => uniqid(),
+            $like = Like::create([
                 'id_pelaporan' => $id_pelaporan,
                 'nis' => $nis,
             ]);
             $action = 'liked';
+
+            // Kirim notifikasi ke pemilik laporan saat ada like baru
+            if ((string) $aspirasi->nis !== (string) $nis) {
+                Notification::create([
+                    'user_id' => $aspirasi->nis,
+                    'type' => 'new_like',
+                    'title' => 'Like Baru pada Laporan Anda',
+                    'message' => 'Laporan Anda disukai oleh ' . (session('siswa_nama') ?? 'siswa lain') . '.',
+                    'data' => [
+                        'aspirasi_id' => $aspirasi->id_pelaporan,
+                        'like_id' => $like->id_like,
+                        'liked_by_nis' => $nis,
+                    ],
+                ]);
+            }
         }
 
         $likesCount = $aspirasi->likes()->count();

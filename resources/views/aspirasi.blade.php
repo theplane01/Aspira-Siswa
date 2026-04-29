@@ -15,11 +15,13 @@
             --surface:   #f1f5f9;
             --surface-2: #e2e8f0;
             --border:    #e2e8f0;
+            --gb:        #e2e8f0;
             --text:      #1e293b;
             --text-soft: #64748b;
             --text-dim:  #94a3b8;
             --primary:   #2563eb;
             --primary-dark: #1d4ed8;
+            --indigo:    #2563eb;
             --info:      #0ea5e9;
             --success:   #10b981;
             --warning:   #f59e0b;
@@ -262,6 +264,75 @@
             padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 600;
             margin-bottom: 0.3rem;
         }
+        .filter-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.95rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text-soft);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover {
+            color: var(--primary);
+            border-color: rgba(37,99,235,0.22);
+            background: rgba(37,99,235,0.08);
+        }
+        .filter-btn.active {
+            color: var(--primary);
+            background: rgba(37,99,235,0.12);
+            border-color: rgba(37,99,235,0.24);
+        }
+        .report-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(15,23,42,0.22);
+        }
+        .report-card h5 {
+            color: #ffffff !important;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+        }
+        .report-card p {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        .admin-meta {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.14);
+            color: white;
+            border-radius: 8px;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-view:hover {
+            background: rgba(255,255,255,0.24);
+            color: white;
+        }
+        .feedback-bubble {
+            background: rgba(37,99,235,0.08);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 0.6rem 0.6rem 0;
+            padding: 0.45rem 0.65rem;
+            font-size: 0.8rem;
+            color: var(--text-soft);
+            font-style: italic;
+        }
 
         /* ── MODAL ── */
         .modal-content {
@@ -378,12 +449,6 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="/aspirasi" class="sidebar-link {{ request()->path() == 'aspirasi' ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Semua Laporan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="/admin/approvals" class="sidebar-link {{ request()->path() == 'admin/approvals' ? 'active' : '' }}">
                     <i class="bi bi-person-check-fill"></i>
                     <span>Approval Registrasi</span>
@@ -412,7 +477,7 @@
             <!-- USER-ONLY ITEMS -->
             @if(session('siswa_nis'))
             <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
+                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
                     <i class="bi bi-collection"></i>
                     <span>Laporan Saya</span>
                 </a>
@@ -811,7 +876,7 @@
             }
         }
 
-      
+        document.addEventListener('DOMContentLoaded', function () {
             refreshAspirasiStats();
             setInterval(refreshAspirasiStats, 10000);
 

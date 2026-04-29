@@ -288,6 +288,103 @@
         }
         .btn-danger-pill:hover { background: rgba(239,68,68,0.2); }
 
+        .modal-soft .modal-content {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+        }
+        .modal-soft .modal-header {
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(14,165,233,0.05) 100%);
+            padding: 1rem 1.25rem;
+        }
+        .modal-soft .modal-body {
+            padding: 1.25rem;
+        }
+        .modal-soft .modal-footer {
+            border-top: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+            background: rgba(248, 250, 252, 0.7);
+        }
+        .feedback-form-card {
+            background: linear-gradient(180deg, rgba(248,250,252,0.9) 0%, rgba(255,255,255,1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem;
+        }
+        .feedback-form-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .feedback-form-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(14,165,233,0.12));
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+        .feedback-form-title {
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.2rem;
+        }
+        .feedback-form-subtitle {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin: 0;
+        }
+        .feedback-label {
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.84rem;
+            margin-bottom: 0.45rem;
+        }
+        .feedback-select,
+        .feedback-textarea {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9rem;
+            padding: 0.75rem 0.95rem;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+        .feedback-select:focus,
+        .feedback-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .feedback-help {
+            color: var(--text-dim);
+            font-size: 0.77rem;
+            margin-top: 0.45rem;
+        }
+        .btn-soft-cancel {
+            background: white;
+            color: var(--text-soft);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 1.1rem;
+            font-weight: 600;
+        }
+        .btn-soft-submit {
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.7rem 1.1rem;
+            font-weight: 700;
+            box-shadow: 0 8px 16px rgba(37,99,235,0.18);
+        }
+
         /* ── CHART ── */
         .chart-container { position: relative; height: 300px; margin-bottom: 2rem; }
 
@@ -362,12 +459,6 @@
                 <a href="/admin" class="sidebar-link {{ request()->path() == 'admin' ? 'active' : '' }}">
                     <i class="bi bi-speedometer2"></i>
                     <span>Dashboard</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="/aspirasi" class="sidebar-link {{ request()->path() == 'aspirasi' ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Semua Laporan</span>
                 </a>
             </li>
             <li class="sidebar-item">
@@ -453,27 +544,36 @@
             <!-- SEARCH & FILTER -->
             <div class="search-filter">
                 <form method="GET" action="/admin" class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" name="search" class="form-control" placeholder="Telusuri NIS, jenis, atau konten laporan..." value="{{ request('search') }}">
+                    <div class="col-md-3">
+                        <input type="text" name="judul" class="form-control" placeholder="Filter per judul aspirasi..." value="{{ request('judul') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" name="tanggal" class="form-control" value="{{ request('tanggal') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="month" name="bulan" class="form-control" value="{{ request('bulan') }}">
                     </div>
                     <div class="col-md-2">
                         <select name="status" class="form-select">
-                            <option value="">Semua Kondisi</option>
-                            <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
-                            <option value="Proses" {{ request('status') == 'Proses' ? 'selected' : '' }}>Proses</option>
+                            <option value="">Semua Status</option>
+                            <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Belum Diproses</option>
+                            <option value="Proses" {{ request('status') == 'Proses' ? 'selected' : '' }}>Diproses</option>
                             <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <input type="text" name="siswa" class="form-control" placeholder="Filter siswa (Nama / NIS)..." value="{{ request('siswa') }}">
+                    </div>
                     <div class="col-md-2">
                         <select name="kategori" class="form-select">
-                            <option value="">Semua Jenis</option>
-                            @foreach(\App\Models\Kategori::all() as $kat)
+                            <option value="">Semua Kategori</option>
+                            @foreach($kategoris as $kat)
                                 <option value="{{ $kat->id_kategori }}" {{ request('kategori') == $kat->id_kategori ? 'selected' : '' }}>{{ $kat->ket_kategori }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn-primary-pill w-100"><i class="bi bi-search"></i> Telusuri</button>
+                        <button type="submit" class="btn-primary-pill w-100"><i class="bi bi-funnel"></i> Terapkan</button>
                     </div>
                     <div class="col-md-2">
                         <a href="/admin" class="btn-outline-new w-100"><i class="bi bi-x-circle"></i> Hapus Filter</a>
@@ -518,7 +618,10 @@
                             @forelse($aspirasis as $aspi)
                             <tr>
                                 <td><input type="checkbox" class="row-checkbox" value="{{ $aspi->id_pelaporan }}"></td>
-                                <td class="fw-bold">{{ $aspi->nis }}</td>
+                                <td>
+                                    <div class="fw-bold">{{ $aspi->nis }}</div>
+                                    <div class="text-dim" style="font-size: 0.78rem;">{{ $aspi->siswa->nama ?? '-' }}</div>
+                                </td>
                                 <td>{{ $aspi->kategori->ket_kategori ?? '-' }}</td>
                                 <td>
                                     <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
@@ -585,12 +688,12 @@
     <!-- MODALS -->
     @foreach($aspirasis as $aspi)
     <!-- Modal Foto -->
-    <div class="modal fade" id="modalFoto{{ $aspi->id_pelaporan }}" tabindex="-1">
+    <div class="modal fade modal-soft" id="modalFoto{{ $aspi->id_pelaporan }}" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content" style="background: var(--surface); border: 1px solid var(--gb);">
-                <div class="modal-header" style="border-bottom: 1px solid var(--gb);">
+            <div class="modal-content">
+                <div class="modal-header">
                     <h5 class="modal-title" style="color: var(--text);">Foto Bukti - NIS {{ $aspi->nis }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
                     <img src="{{ asset($aspi->foto) }}" class="img-fluid rounded" style="max-height: 70vh;">
@@ -600,32 +703,47 @@
     </div>
 
     <!-- Modal Tanggapan -->
-    <div class="modal fade" id="modalTanggapan{{ $aspi->id_pelaporan }}" tabindex="-1">
+    <div class="modal fade modal-soft" id="modalTanggapan{{ $aspi->id_pelaporan }}" tabindex="-1">
         <div class="modal-dialog">
-            <div class="modal-content" style="background: var(--surface); border: 1px solid var(--gb);">
+            <div class="modal-content">
                 <form action="/admin/feedback/{{ $aspi->id_pelaporan }}" method="POST">
                     @csrf
-                    <div class="modal-header" style="border-bottom: 1px solid var(--gb);">
+                    <div class="modal-header">
                         <h5 class="modal-title" style="color: var(--text);">Umpan Balik Laporan</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label" style="color: #000000; font-weight: 500; margin-bottom: 0.5rem;">Status</label>
-                            <select name="status" class="form-select" style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.16); color: var(--text);">
-                                @foreach(['Menunggu','Proses','Selesai'] as $s)
-                                    <option value="{{ $s }}" {{ $aspi->status == $s ? 'selected' : '' }}>{{ $s }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                           <label class="form-label" style="color: #000000; font-weight: 500; margin-bottom: 0.5rem;">Feedback</label>
-                            <textarea name="feedback" class="form-control" style="background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(0, 0, 0, 0.16); color: var(--text);" rows="3" required>{{ $aspi->feedback }}</textarea>
+                        <div class="feedback-form-card">
+                            <div class="feedback-form-head">
+                                <div class="feedback-form-icon">
+                                    <i class="bi bi-chat-left-text"></i>
+                                </div>
+                                <div>
+                                    <div class="feedback-form-title">Kelola Tindak Lanjut Laporan</div>
+                                    <p class="feedback-form-subtitle">Perbarui status laporan dan berikan tanggapan yang jelas untuk siswa.</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="feedback-label">Status Laporan</label>
+                                <select name="status" class="form-select feedback-select">
+                                    @foreach(['Menunggu','Proses','Selesai'] as $s)
+                                        <option value="{{ $s }}" {{ $aspi->status == $s ? 'selected' : '' }}>{{ $s }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="feedback-help">Pilih status terbaru agar siswa dapat memantau progres penanganan.</div>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="feedback-label">Pesan Umpan Balik</label>
+                                <textarea name="feedback" class="form-control feedback-textarea" rows="4" placeholder="Tulis tanggapan, arahan, atau hasil tindak lanjut laporan ini..." required>{{ $aspi->feedback }}</textarea>
+                                <div class="feedback-help">Gunakan bahasa yang singkat, jelas, dan mudah dipahami oleh siswa.</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer" style="border-top: 1px solid var(--gb);">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgb(255, 255, 255); color: var(--text-soft); border: 1px solid rgb(0, 0, 0);">Batal</button>
-                        <button type="submit" class="btn" style="background: linear-gradient(135deg, var(--indigo), #ffffff); color: #000000; border: none;">Kirim</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-soft-cancel" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn-soft-submit"><i class="bi bi-send-check me-1"></i> Simpan Umpan Balik</button>
                     </div>
                 </form>
             </div>

@@ -406,7 +406,7 @@
             <!-- USER-ONLY ITEMS -->
             @if(session('siswa_nis'))
             <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
+                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
                     <i class="bi bi-collection"></i>
                     <span>Laporan Saya</span>
                 </a>
@@ -539,7 +539,7 @@
                                     </td>
                                     <td>
                                         <div style="font-weight: 600; font-size: 0.88rem; color: var(--text);">
-                                            {{ $laporan->kategori->ket_kategori }}
+                                            {{ $laporan->kategori?->ket_kategori ?? 'N/A' }}
                                         </div>
                                         <div style="color: var(--text-soft); font-size: 0.82rem; margin-top: 0.2rem; max-width: 320px;">
                                             {{ $laporan->ket }}

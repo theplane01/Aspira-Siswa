@@ -234,7 +234,7 @@
             <!-- USER-ONLY ITEMS -->
             @if(session('siswa_nis'))
             <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
+                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
                     <i class="bi bi-collection"></i>
                     <span>Laporan Saya</span>
                 </a>
@@ -309,7 +309,9 @@
                     </div>
                 </div>
                 <div class="hero-label"><i class="bi bi-bell-fill me-1"></i> Pemberitahuan</div>
+                <br>
                 <h1>Notifikasi Terkini</h1>
+                <br>
                 <p>Terima pembaruan dan informasi status laporan Anda secara langsung dan terpercaya.</p>
             </div>
 
@@ -319,6 +321,8 @@
                     <h4 class="card-title"><i class="bi bi-bell"></i> Daftar Pemberitahuan</h4>
                     <button class="btn-mark-all" onclick="markAllAsRead()">Tanda Semua Sudah Dibaca</button>
                 </div>
+
+                <br>
 
                 @forelse($notifications as $notif)
                 <div class="notification-item {{ $notif->read_at ? '' : 'unread' }}" onclick="markAsRead({{ $notif->id }})">

@@ -350,12 +350,6 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="/aspirasi" class="sidebar-link {{ request()->path() == 'aspirasi' ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Semua Laporan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="/admin/kategori" class="sidebar-link {{ request()->path() == 'admin/kategori' ? 'active' : '' }}">
                     <i class="bi bi-tag"></i>
                     <span>Manajemen Kategori</span>

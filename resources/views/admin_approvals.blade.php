@@ -351,12 +351,6 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="/aspirasi" class="sidebar-link {{ request()->path() == 'aspirasi' ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Semua Laporan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="/admin/approvals" class="sidebar-link {{ request()->path() == 'admin/approvals' ? 'active' : '' }}">
                     <i class="bi bi-person-check-fill"></i>
                     <span>Approval Registrasi</span>

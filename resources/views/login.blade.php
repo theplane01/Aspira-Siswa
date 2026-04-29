@@ -266,6 +266,33 @@
         .form-control::placeholder {
             color: var(--text-secondary);
         }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-field .form-control {
+            padding-right: 2.75rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 0.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
         
         .alert-error {
             background: #fee2e2;
@@ -391,11 +418,16 @@
                         @csrf
                         <div class="form-group">
                             <label class="form-label">NIS (Nomor Induk Siswa)</label>
-                            <input type="text" name="nis" class="form-control" placeholder="Tuliskan NIS Anda" required>
+                            <input type="text" name="nis" class="form-control" placeholder="Tuliskan NIS Anda (8 digit)" inputmode="numeric" pattern="\d{8}" minlength="8" maxlength="8" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Sandi</label>
-                            <input type="password" name="password" class="form-control" placeholder="Tuliskan sandi" required>
+                            <div class="password-field">
+                                <input type="password" name="password" class="form-control" placeholder="Tuliskan sandi" required>
+                                <button type="button" class="password-toggle" aria-label="Tampilkan sandi" onclick="togglePassword(this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-login">
                             <i class="bi bi-box-arrow-in-right"></i> Lanjut Sebagai Murid
@@ -416,7 +448,12 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Sandi Pengelola</label>
-                            <input type="password" name="password" class="form-control" placeholder="Tuliskan sandi" required>
+                            <div class="password-field">
+                                <input type="password" name="password" class="form-control" placeholder="Tuliskan sandi" required>
+                                <button type="button" class="password-toggle" aria-label="Tampilkan sandi" onclick="togglePassword(this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
                         </div>
                         <button type="submit" class="btn-login">
                             <i class="bi bi-shield-lock"></i> Lanjut Sebagai Pengelola
@@ -429,6 +466,17 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function togglePassword(button) {
+            const input = button.previousElementSibling;
+            const icon = button.querySelector('i');
+            const isHidden = input.type === 'password';
+
+            input.type = isHidden ? 'text' : 'password';
+            icon.classList.toggle('bi-eye', !isHidden);
+            icon.classList.toggle('bi-eye-slash', isHidden);
+            button.setAttribute('aria-label', isHidden ? 'Sembunyikan sandi' : 'Tampilkan sandi');
+        }
+
         function switchTab(tabName, element) {
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {

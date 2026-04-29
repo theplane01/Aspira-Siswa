@@ -14,23 +14,7 @@ class AspirasiController extends Controller
         $status = request('status');
 
         if (session('admin_id')) {
-            $aspirasisQuery = Aspirasi::with('kategori')
-                ->orderBy('created_at', 'desc');
-
-            $stats = [
-                'total' => $aspirasisQuery->count(),
-                'menunggu' => (clone $aspirasisQuery)->where('status', 'Menunggu')->count(),
-                'proses' => (clone $aspirasisQuery)->where('status', 'Proses')->count(),
-                'selesai' => (clone $aspirasisQuery)->where('status', 'Selesai')->count(),
-            ];
-
-            if (in_array($status, ['Menunggu', 'Proses', 'Selesai'])) {
-                $aspirasisQuery->where('status', $status);
-            }
-
-            $aspirasis = $aspirasisQuery->get();
-
-            return view('aspirasi', compact('kategoris', 'aspirasis', 'status', 'stats'));
+            return redirect('/admin')->with('info', 'Halaman Semua Laporan untuk admin sudah dihapus. Silakan gunakan Dashboard Admin.');
         }
 
         if (!session('siswa_nis')) {

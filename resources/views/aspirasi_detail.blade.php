@@ -490,12 +490,6 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="/aspirasi" class="sidebar-link {{ request()->path() == 'aspirasi' ? 'active' : '' }}">
-                    <i class="bi bi-journal-text"></i>
-                    <span>Semua Laporan</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
                 <a href="/admin/approvals" class="sidebar-link {{ request()->path() == 'admin/approvals' ? 'active' : '' }}">
                     <i class="bi bi-person-check-fill"></i>
                     <span>Approval Registrasi</span>
@@ -524,7 +518,7 @@
             <!-- USER-ONLY ITEMS -->
             @if(session('siswa_nis'))
             <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
+                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
                     <i class="bi bi-collection"></i>
                     <span>Laporan Saya</span>
                 </a>
@@ -651,7 +645,7 @@
 
                 <!-- Interactions -->
                 <div class="interactions">
-                    <button class="btn-interact" id="btn-like" onclick="toggleLike({{ $aspirasi->id_pelaporan }})">
+                    <button class="btn-interact {{ $isLikedByUser ? 'liked' : '' }}" id="btn-like" onclick="toggleLike({{ $aspirasi->id_pelaporan }})">
                         <i class="bi {{ $isLikedByUser ? 'bi-heart-fill' : 'bi-heart' }}"></i>
                         <span id="like-count">{{ $likesCount }}</span> Like
                     </button>
@@ -726,7 +720,11 @@
                 if (data.success) {
                     document.getElementById('like-count').textContent = data.likesCount;
                     const btn = document.getElementById('btn-like');
-                    btn.classList.toggle('liked');
+                    const icon = btn.querySelector('i');
+                    const liked = data.action === 'liked';
+                    btn.classList.toggle('liked', liked);
+                    icon.classList.toggle('bi-heart-fill', liked);
+                    icon.classList.toggle('bi-heart', !liked);
                     Swal.fire({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000, title: data.message, icon: 'success' });
                 } else {
                     window.location.href = '/login';
@@ -737,19 +735,29 @@
         function addComment(e, id) {
             e.preventDefault();
             const textarea = document.getElementById('comment-textarea');
+            const komentar = textarea.value.trim();
+            if (!komentar) {
+                Swal.fire({ title: 'Komentar kosong', text: 'Silakan isi komentar terlebih dahulu.', icon: 'warning' });
+                return;
+            }
             fetch(`/aspirasi/${id}/comments`, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ komentar: textarea.value })
+                body: JSON.stringify({ komentar })
             })
             .then(r => r.json())
             .then(data => {
                 if (data.success) {
                     textarea.value = '';
+                    if (typeof data.commentsCount !== 'undefined') {
+                        document.getElementById('comment-count').textContent = data.commentsCount;
+                    }
                     location.reload();
+                } else if (data.error) {
+                    Swal.fire({ title: 'Gagal', text: data.error, icon: 'error' });
                 }
             })
             .catch(err => Swal.fire({ title: 'Error', text: err, icon: 'error' }));

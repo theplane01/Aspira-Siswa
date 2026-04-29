@@ -272,7 +272,7 @@
                         <label class="form-label">NIS</label>
                         <div class="input-wrapper">
                             <i class="input-icon bi bi-card-text"></i>
-                            <input type="text" name="nis" value="{{ old('nis') }}" class="form-control" placeholder="Nomor Induk Siswa" required>
+                            <input type="text" name="nis" value="{{ old('nis') }}" class="form-control" placeholder="Nomor Induk Siswa (8 digit)" inputmode="numeric" pattern="\d{8}" minlength="8" maxlength="8" required>
                         </div>
                     </div>
                     <div class="form-group">

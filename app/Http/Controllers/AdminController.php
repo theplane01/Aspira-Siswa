@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aspirasi;
 use App\Models\Siswa;
 use App\Models\Notification;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,32 +18,12 @@ class AdminController extends Controller
             return redirect('/login')->with('error', 'Anda harus login terlebih dahulu untuk mengakses halaman ini.');
         }
 
-        $query = Aspirasi::with('kategori');
-
-        // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nis', 'like', "%{$search}%")
-                  ->orWhere('ket', 'like', "%{$search}%")
-                  ->orWhereHas('kategori', function($kq) use ($search) {
-                      $kq->where('ket_kategori', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        // Status filter
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Kategori filter
-        if ($request->filled('kategori')) {
-            $query->where('id_kategori', $request->kategori);
-        }
+        $query = Aspirasi::with(['kategori', 'siswa']);
+        $this->applyDashboardFilters($query, $request);
 
         $aspirasis = $query->orderBy('created_at', 'desc')->paginate(15);
-        return view('admin_dashboard', compact('aspirasis'));
+        $kategoris = Kategori::orderBy('ket_kategori')->get();
+        return view('admin_dashboard', compact('aspirasis', 'kategoris'));
     }
 
     public function update(Request $request, $id) {
@@ -186,27 +167,8 @@ class AdminController extends Controller
     public function exportCsv(Request $request) {
         if (!session('admin_id')) return redirect('/login');
 
-        $query = Aspirasi::with('kategori');
-
-        // Apply same filters as index
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nis', 'like', "%{$search}%")
-                  ->orWhere('ket', 'like', "%{$search}%")
-                  ->orWhereHas('kategori', function($kq) use ($search) {
-                      $kq->where('ket_kategori', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('kategori')) {
-            $query->where('id_kategori', $request->kategori);
-        }
+        $query = Aspirasi::with(['kategori', 'siswa']);
+        $this->applyDashboardFilters($query, $request);
 
         $aspirasis = $query->orderBy('created_at', 'desc')->get();
 
@@ -243,27 +205,8 @@ class AdminController extends Controller
         // For PDF export, we'll use a simple HTML to PDF approach
         // In a real app, you'd use libraries like DomPDF or TCPDF
 
-        $query = Aspirasi::with('kategori');
-
-        // Apply same filters
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nis', 'like', "%{$search}%")
-                  ->orWhere('ket', 'like', "%{$search}%")
-                  ->orWhereHas('kategori', function($kq) use ($search) {
-                      $kq->where('ket_kategori', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('kategori')) {
-            $query->where('id_kategori', $request->kategori);
-        }
+        $query = Aspirasi::with(['kategori', 'siswa']);
+        $this->applyDashboardFilters($query, $request);
 
         $aspirasis = $query->orderBy('created_at', 'desc')->get();
 
@@ -364,6 +307,47 @@ class AdminController extends Controller
             'success' => true,
             'message' => "Akun {$siswa->nama} telah ditolak dan tidak dapat melakukan login."
         ]);
+    }
+
+    private function applyDashboardFilters($query, Request $request): void
+    {
+        // Filter per judul aspirasi (mengandung kata kunci)
+        if ($request->filled('judul')) {
+            $query->where('ket', 'like', '%' . $request->judul . '%');
+        }
+
+        // Filter tanggal spesifik
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        // Filter per bulan + tahun (format YYYY-MM)
+        if ($request->filled('bulan') && preg_match('/^\d{4}\-\d{2}$/', $request->bulan)) {
+            [$year, $month] = explode('-', $request->bulan);
+            $query->whereYear('created_at', (int) $year)
+                ->whereMonth('created_at', (int) $month);
+        }
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter siswa berdasarkan nama atau NIS
+        if ($request->filled('siswa')) {
+            $siswaKeyword = $request->siswa;
+            $query->where(function ($q) use ($siswaKeyword) {
+                $q->where('nis', 'like', '%' . $siswaKeyword . '%')
+                    ->orWhereHas('siswa', function ($sq) use ($siswaKeyword) {
+                        $sq->where('nama', 'like', '%' . $siswaKeyword . '%');
+                    });
+            });
+        }
+
+        // Filter kategori
+        if ($request->filled('kategori')) {
+            $query->where('id_kategori', $request->kategori);
+        }
     }
 
 }

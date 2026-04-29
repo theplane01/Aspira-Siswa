@@ -41,6 +41,15 @@ class AuthController extends Controller {
     }
 
     public function loginSiswa(Request $request) {
+        $request->validate([
+            'nis' => 'required|digits:8',
+            'password' => 'required|string',
+        ], [
+            'nis.required' => 'Nomor Induk Siswa (NIS) harus diisi.',
+            'nis.digits' => 'Nomor Induk Siswa (NIS) harus terdiri dari 8 digit angka.',
+            'password.required' => 'Kata sandi harus diisi.',
+        ]);
+
         $siswa = Siswa::where('nis', $request->nis)->first();
     
         // Cek NIS dan Password (asumsi password di database sudah di-bcrypt)
@@ -77,14 +86,14 @@ class AuthController extends Controller {
 
     public function registerSiswa(Request $request) {
         $request->validate([
-            'nis' => 'required|numeric|digits_between:1,10|unique:siswas,nis',
+            'nis' => 'required|digits:8|unique:siswas,nis',
             'nama' => 'required|string|max:35',
             'kelas' => 'required|string|max:10',
             'password' => 'required|string|min:6|confirmed',
         ], [
             'nis.required' => 'Nomor Induk Siswa (NIS) harus diisi.',
             'nis.unique' => 'Nomor Induk Siswa (NIS) ini sudah terdaftar.',
-            'nis.numeric' => 'Nomor Induk Siswa (NIS) harus berupa angka.',
+            'nis.digits' => 'Nomor Induk Siswa (NIS) harus terdiri dari 8 digit angka.',
             'nama.required' => 'Nama lengkap harus diisi.',
             'nama.string' => 'Nama lengkap harus berupa teks.',
             'nama.max' => 'Nama lengkap maksimal 35 karakter.',

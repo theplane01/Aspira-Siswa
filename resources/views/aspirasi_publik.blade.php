@@ -424,7 +424,7 @@
             <!-- USER-ONLY ITEMS -->
             @if(session('siswa_nis'))
             <li class="sidebar-item">
-                <a href="/profile" class="sidebar-link {{ request()->path() == 'profile' ? 'active' : '' }}">
+                <a href="/laporan-saya" class="sidebar-link {{ request()->path() == 'laporan-saya' ? 'active' : '' }}">
                     <i class="bi bi-collection"></i>
                     <span>Laporan Saya</span>
                 </a>
